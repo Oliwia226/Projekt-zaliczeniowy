@@ -61,7 +61,7 @@ namespace projekt___angielski_quiz
                         break;
                     }
                 }
-            }
+            } 
 
             if (translation != null)
             {
