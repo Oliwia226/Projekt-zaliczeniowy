@@ -35,7 +35,7 @@
             this.losowe = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.odpowiedz = new System.Windows.Forms.TextBox();
-            this.czas = new System.Windows.Forms.Label();
+            this.timelabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.start = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
@@ -43,7 +43,9 @@
             this.label5 = new System.Windows.Forms.Label();
             this.bledne = new System.Windows.Forms.Label();
             this.info = new System.Windows.Forms.Button();
+            this.wynikPictureBox = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.wynikPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -95,7 +97,7 @@
             // 
             this.losowe.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.losowe.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.losowe.Location = new System.Drawing.Point(149, 155);
+            this.losowe.Location = new System.Drawing.Point(151, 203);
             this.losowe.Name = "losowe";
             this.losowe.Size = new System.Drawing.Size(150, 30);
             this.losowe.TabIndex = 1;
@@ -103,7 +105,7 @@
             // label1
             // 
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label1.Location = new System.Drawing.Point(353, 140);
+            this.label1.Location = new System.Drawing.Point(355, 188);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(85, 45);
             this.label1.TabIndex = 2;
@@ -112,20 +114,20 @@
             // odpowiedz
             // 
             this.odpowiedz.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.odpowiedz.Location = new System.Drawing.Point(470, 149);
+            this.odpowiedz.Location = new System.Drawing.Point(472, 197);
             this.odpowiedz.Name = "odpowiedz";
             this.odpowiedz.Size = new System.Drawing.Size(150, 36);
             this.odpowiedz.TabIndex = 4;
             this.odpowiedz.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
-            // czas
+            // timelabel
             // 
-            this.czas.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.czas.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.czas.Location = new System.Drawing.Point(720, 55);
-            this.czas.Name = "czas";
-            this.czas.Size = new System.Drawing.Size(70, 40);
-            this.czas.TabIndex = 5;
+            this.timelabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.timelabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.timelabel.Location = new System.Drawing.Point(720, 55);
+            this.timelabel.Name = "timelabel";
+            this.timelabel.Size = new System.Drawing.Size(70, 40);
+            this.timelabel.TabIndex = 5;
             // 
             // label2
             // 
@@ -144,11 +146,12 @@
             this.start.TabIndex = 7;
             this.start.Text = "Rozpocznij test";
             this.start.UseVisualStyleBackColor = true;
+            this.start.Click += new System.EventHandler(this.start_Click);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 242);
+            this.label3.Location = new System.Drawing.Point(12, 344);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(154, 16);
             this.label3.TabIndex = 8;
@@ -158,15 +161,17 @@
             // 
             this.prawidlowe.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.prawidlowe.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.prawidlowe.Location = new System.Drawing.Point(172, 232);
+            this.prawidlowe.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.prawidlowe.Location = new System.Drawing.Point(172, 334);
             this.prawidlowe.Name = "prawidlowe";
-            this.prawidlowe.Size = new System.Drawing.Size(35, 35);
+            this.prawidlowe.Size = new System.Drawing.Size(55, 35);
             this.prawidlowe.TabIndex = 9;
+            this.prawidlowe.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(286, 242);
+            this.label5.Location = new System.Drawing.Point(12, 401);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(128, 16);
             this.label5.TabIndex = 10;
@@ -176,10 +181,12 @@
             // 
             this.bledne.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.bledne.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.bledne.Location = new System.Drawing.Point(417, 232);
+            this.bledne.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.bledne.Location = new System.Drawing.Point(172, 387);
             this.bledne.Name = "bledne";
-            this.bledne.Size = new System.Drawing.Size(35, 35);
+            this.bledne.Size = new System.Drawing.Size(55, 35);
             this.bledne.TabIndex = 11;
+            this.bledne.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // info
             // 
@@ -192,12 +199,22 @@
             this.info.UseVisualStyleBackColor = true;
             this.info.Click += new System.EventHandler(this.info_Click);
             // 
+            // wynikPictureBox
+            // 
+            this.wynikPictureBox.Location = new System.Drawing.Point(472, 304);
+            this.wynikPictureBox.Name = "wynikPictureBox";
+            this.wynikPictureBox.Size = new System.Drawing.Size(310, 187);
+            this.wynikPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.wynikPictureBox.TabIndex = 13;
+            this.wynikPictureBox.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.ClientSize = new System.Drawing.Size(802, 503);
+            this.Controls.Add(this.wynikPictureBox);
             this.Controls.Add(this.info);
             this.Controls.Add(this.bledne);
             this.Controls.Add(this.label5);
@@ -205,15 +222,17 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.start);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.czas);
+            this.Controls.Add(this.timelabel);
             this.Controls.Add(this.odpowiedz);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.losowe);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.wynikPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -228,7 +247,7 @@
         private System.Windows.Forms.Label losowe;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox odpowiedz;
-        private System.Windows.Forms.Label czas;
+        private System.Windows.Forms.Label timelabel;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button start;
         private System.Windows.Forms.Label label3;
@@ -236,6 +255,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label bledne;
         private System.Windows.Forms.Button info;
+        private System.Windows.Forms.PictureBox wynikPictureBox;
     }
 }
 

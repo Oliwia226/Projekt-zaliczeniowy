@@ -1,0 +1,230 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.IO;
+
+
+namespace projekt___angielski_quiz
+{
+    public partial class Form1 : Form
+    {
+        private List<(string ang, string pl)> slowka = new List<(string, string)>();
+        private int currentQuestionIndex = -1;
+        private int correctCount = 0;
+        private Random random = new Random();
+        private Timer quizTimer = new Timer();
+        private int remainingTime;
+        private bool isQuizActive = false;
+
+        public Form1()
+        {
+            InitializeComponent();
+            quizTimer.Interval = 1000;
+            quizTimer.Tick += QuizTimer_Tick;
+        }
+
+        private void QuizTimer_Tick(object sender, EventArgs e)
+        {
+            remainingTime--;
+            timelabel.Text = remainingTime.ToString();
+
+            if (remainingTime <= 0)
+            {
+                quizTimer.Stop();
+                HandleAnswer(false);
+                ShowNextQuestion();
+            }
+        }
+
+        private void tlumacz_Click(object sender, EventArgs e)
+        {
+            if (isQuizActive)
+            {
+                quizTimer.Stop();
+                string userAnswer = dotlumaczenia.Text.Trim().ToLowerInvariant();
+                string correctAnswer = slowka[currentQuestionIndex].ang.Trim().ToLowerInvariant();
+
+                bool isCorrect = string.Equals(userAnswer, correctAnswer, StringComparison.InvariantCultureIgnoreCase);
+                HandleAnswer(isCorrect);
+                ShowNextQuestion();
+            }
+            else
+            {
+                // Original translation code
+                tlumaczenie.Text = "";
+                tlumaczenie.ForeColor = Color.Black;
+                string word = dotlumaczenia.Text.Trim().ToLower();
+
+                if (string.IsNullOrEmpty(word))
+                {
+                    tlumaczenie.Text = "Wpisz słowo!";
+                    tlumaczenie.ForeColor = Color.Red;
+                    return;
+                }
+
+                string filePath = "slownik.csv";
+
+                if (!File.Exists(filePath))
+                {
+                    tlumaczenie.Text = "Brak pliku ze słownikiem! Przepraszamy!";
+                    tlumaczenie.ForeColor = Color.Red;
+                    return;
+                }
+
+                string[] wiersze = File.ReadAllLines(filePath);
+
+                string translation = null;
+                foreach (string wiersz in wiersze)
+                {
+                    if (string.IsNullOrWhiteSpace(wiersz))
+                        continue;
+
+                    string[] slowa = wiersz.Split(':');
+                    if (slowa.Length == 2)
+                    {
+                        string ang = slowa[0].Trim().ToLower();
+                        string pl = slowa[1].Trim();
+
+                        if (ang == word)
+                        {
+                            translation = pl;
+                            break;
+                        }
+                    }
+                }
+
+                if (translation != null)
+                {
+                    tlumaczenie.Text = translation;
+                    tlumaczenie.ForeColor = Color.Black;
+                }
+                else
+                {
+                    tlumaczenie.Text = "Brak słowa w słowniku";
+                    tlumaczenie.ForeColor = Color.Red;
+                }
+            }
+        }
+
+        private void Shuffle(List<(string ang, string pl)> list)
+        {
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = random.Next(n + 1);
+                var value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
+        }
+
+        private void start_Click(object sender, EventArgs e)
+        {
+            slowka.Clear();
+            string filePath = "slownik.csv";
+
+            if (!File.Exists(filePath))
+            {
+                MessageBox.Show("Brak pliku ze słownikiem! Przepraszamy!");
+                return;
+            }
+
+            string[] wiersze = File.ReadAllLines(filePath);
+
+            foreach (string wiersz in wiersze)
+            {
+                if (string.IsNullOrWhiteSpace(wiersz))
+                    continue;
+
+                string[] czesci = wiersz.Split(':');
+                if (czesci.Length == 2)
+                {
+                    slowka.Add((czesci[0].Trim().ToLower(), czesci[1].Trim()));
+                }
+            }
+
+            if (slowka.Count == 0)
+            {
+                MessageBox.Show("Brak słówek w słowniku!");
+                return;
+            }
+
+            Shuffle(slowka);
+            slowka = slowka.Take(10).ToList();
+            correctCount = 0;
+            currentQuestionIndex = -1;
+            isQuizActive = true;
+            tlumaczenie.ForeColor = Color.Black;
+            dotlumaczenia.Text = "";
+            quizTimer.Stop();
+            ShowNextQuestion();
+        }
+
+        private void ShowNextQuestion()
+        {
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex >= slowka.Count)
+            {
+                EndQuiz();
+                return;
+            }
+
+            losowe.Text = slowka[currentQuestionIndex].pl;
+            dotlumaczenia.Text = "";
+            remainingTime = 10;
+            timelabel.Text = remainingTime.ToString();
+            quizTimer.Start();
+        }
+
+        private void HandleAnswer(bool isCorrect)
+        {
+            if (isCorrect)
+            {
+                correctCount++;
+                MessageBox.Show("Poprawna odpowiedź!");
+            }
+            else
+            {
+                MessageBox.Show($"Niepoprawnie! Prawidłowa odpowiedź to: {slowka[currentQuestionIndex].ang}");
+            }
+        }
+
+        private void EndQuiz()
+        {
+            isQuizActive = false;
+            quizTimer.Stop();
+            MessageBox.Show($"Koniec testu! Twój wynik: {correctCount}/{slowka.Count}");
+            tlumaczenie.Text = "";
+            dotlumaczenia.Text = "";
+        }
+
+        // Pozostałe metody pozostają bez zmian
+        private void textBox1_TextChanged(object sender, EventArgs e) { }
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e) { }
+        private void textBox1_TextChanged_1(object sender, EventArgs e) { }
+        private void textBox2_TextChanged(object sender, EventArgs e) { }
+
+        private void info_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(
+                "INFORMACJE DO TESTU:\n\n" +
+                "1. Test zawiera 10 pytań\n" +
+                "2. Na każde pytanie masz 10 sekund na odpowiedź\n" +
+                "3. Twoim zadaniem będzie przetłumaczenie słowa z języka polskiego na język angielski\n" +
+                "4. Za każdą prawidłową odpowiedź otrzymasz 1 punkt\n" +
+                "5. Na koniec otrzymasz wynik testu\n\n" +
+                "POWODZENIA!"
+            );
+        }
+    }
+}
