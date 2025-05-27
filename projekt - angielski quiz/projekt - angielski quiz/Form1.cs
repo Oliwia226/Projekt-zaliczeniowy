@@ -135,7 +135,7 @@ namespace projekt___angielski_quiz
         private void SprawdzanieOdp(string userInput)
         {
             string correctAnswer = slowka[currentIndex].ang;
-
+             
             if (string.IsNullOrWhiteSpace(userInput))
             {
                 wrongCount++;
