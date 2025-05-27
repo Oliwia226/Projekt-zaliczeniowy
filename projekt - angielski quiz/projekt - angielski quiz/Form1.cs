@@ -11,7 +11,6 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using System.IO;
 
-
 namespace projekt___angielski_quiz
 {
     public partial class Form1 : Form
@@ -30,20 +29,19 @@ namespace projekt___angielski_quiz
             InitializeComponent();
             quizTimer.Interval = 1000;
             quizTimer.Tick += QuizTimer_Tick;
-            odpowiedz.KeyDown += Odpowiedz_KeyDown;
+            odpowiedz.KeyDown += SprawdzEnter;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // Możesz dodać coś przy starcie, jeśli chcesz
         }
 
         private void start_Click(object sender, EventArgs e)
         {
-            StartQuiz();
+            StartQuizu();
         }
 
-        private void StartQuiz()
+        private void StartQuizu()
         {
             wynikPictureBox.Visible = false;
             string filePath = "slownik.csv";
@@ -54,9 +52,9 @@ namespace projekt___angielski_quiz
             }
 
             slowka.Clear();
-            foreach (var line in File.ReadAllLines(filePath))
+            foreach (string line in File.ReadAllLines(filePath))
             {
-                var parts = line.Split(':');
+                string [] parts = line.Split(':');
                 if (parts.Length == 2)
                 {
                     slowka.Add((parts[0].Trim().ToLower(), parts[1].Trim().ToLower()));
@@ -69,7 +67,7 @@ namespace projekt___angielski_quiz
                 return;
             }
 
-            Shuffle(slowka);
+            MieszanieSlow(slowka);
             slowka = slowka.Take(10).ToList();
 
             currentIndex = -1;
@@ -78,25 +76,28 @@ namespace projekt___angielski_quiz
             prawidlowe.Text = "0";
             bledne.Text = "0";
             isQuizActive = true;
-            ShowNextQuestion();
+            NastepnePytanie();
         }
 
-        private void Shuffle(List<(string ang, string pl)> list)
+        private void MieszanieSlow(List<(string ang, string pl)> list)
         {
             int n = list.Count;
-            while (n > 1)
+
+            for (int i = n - 1; i > 0; i--)
             {
-                int k = random.Next(n--);
-                (list[n], list[k]) = (list[k], list[n]);
+                int k = random.Next(i + 1);
+                (string ang, string pl) temp = list[i];
+                list[i] = list[k];
+                list[k] = temp;
             }
         }
 
-        private void ShowNextQuestion()
+        private void NastepnePytanie()
         {
             currentIndex++;
             if (currentIndex >= slowka.Count)
             {
-                EndQuiz();
+                KoniecQuizu();
                 return;
             }
 
@@ -116,23 +117,23 @@ namespace projekt___angielski_quiz
             if (remainingTime <= 0)
             {
                 quizTimer.Stop();
-                HandleAnswer(null); // brak odpowiedzi = błąd
-                ShowNextQuestion();
+                SprawdzanieOdp(null); 
+                NastepnePytanie();
             }
         }
 
-        private void Odpowiedz_KeyDown(object sender, KeyEventArgs e)
+        private void SprawdzEnter(object sender, KeyEventArgs e)
         {
             if (isQuizActive && e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
                 quizTimer.Stop();
-                HandleAnswer(odpowiedz.Text.Trim());
-                ShowNextQuestion();
+                SprawdzanieOdp(odpowiedz.Text.Trim());
+                NastepnePytanie();
             }
         }
 
-        private void HandleAnswer(string userInput)
+        private void SprawdzanieOdp(string userInput)
         {
             string correctAnswer = slowka[currentIndex].ang;
 
@@ -156,24 +157,19 @@ namespace projekt___angielski_quiz
             }
         }
 
-        private void EndQuiz()
+        private void KoniecQuizu()
         {
             isQuizActive = false;
             quizTimer.Stop();
-            MessageBox.Show($"Koniec quizu!\nPoprawne: {correctCount}\nBłędne: {wrongCount}");
+            MessageBox.Show($"Koniec quizu!\n\nPoprawne: {correctCount}\nBłędne: {wrongCount}");
             losowe.Text = "";
             odpowiedz.Text = "";
+            timelabel.Text = "";
+
             if (correctCount >= 6)
             {
-                try
-                {
-                    wynikPictureBox.Image = Properties.Resources.zdane_jpeg;
-                    wynikPictureBox.Visible = true;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Nie znaleziono pliku obrazka zdane.jpeg: " + ex.Message);
-                }
+                wynikPictureBox.Image = Properties.Resources.zdane_jpeg;
+                wynikPictureBox.Visible = true;
             }
             else
             {
@@ -189,13 +185,12 @@ namespace projekt___angielski_quiz
                 "1. Test zawiera 10 pytań\n" +
                 "2. Na każde pytanie masz 10 sekund na odpowiedź\n" +
                 "3. Twoim zadaniem jest przetłumaczenie słowa z języka polskiego na angielski\n" +
-                "4. Aby Twoja odpowiedź została zatwierdzona klinknij pzrycisk ENTER\n" +
+                "4. Aby Twoja odpowiedź została zatwierdzona klinknij przycisk ENTER\n" +
                 "5. Za każdą prawidłową odpowiedź otrzymujesz 1 punkt\n" +
                 "6. Na koniec poznasz swój wynik\n\n" +
                 "POWODZENIA!"
             );
         }
-
 
         private void tlumacz_Click(object sender, EventArgs e)
         {
@@ -258,7 +253,5 @@ namespace projekt___angielski_quiz
         }
 
         private void textBox2_TextChanged(object sender, EventArgs e) { }
-
-
     }
 }
