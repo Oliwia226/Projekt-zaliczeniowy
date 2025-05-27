@@ -33,7 +33,7 @@ namespace projekt___angielski_quiz
 
         private void Form1_Load(object sender, EventArgs e)
         {
-        }
+        } 
 
         private void start_Click(object sender, EventArgs e)
         {
