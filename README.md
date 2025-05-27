@@ -68,9 +68,11 @@ Projekt ukończony i działający.
 
 
 ## Obszar do poprawy
-Poprawiony może zostać tłumacz. Można rozwinąć funkcję tłumacza do pobierania tłumaczeń ze stron co zwiększyłoby możliwości tej funkcji.
+- Rozszerzenie funkcji tłumaczenia o integrację z zewnętrznym API (np. Google Translate)
+- Zapis wyników quizu do pliku
 
 
 ## Kontakt
-Projekt stworzony przez [@Oliwia226]
+Projekt stworzony przez [@Oliwia226](https://www.Oliwia226.pl/)
+
 
