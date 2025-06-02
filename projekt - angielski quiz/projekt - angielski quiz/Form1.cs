@@ -16,8 +16,8 @@ namespace projekt___angielski_quiz
     {
         private List<(string ang, string pl)> slowka = new List<(string, string)>();
         private int currentIndex = -1;
-        private int correctCount = 0;
-        private int wrongCount = 0;
+        private int licznikPrawidlowe = 0;
+        private int licznikBledne = 0;
         private Timer quizTimer = new Timer();
         private int remainingTime;
         private bool isQuizActive = false;
@@ -70,8 +70,8 @@ namespace projekt___angielski_quiz
             slowka = slowka.Take(10).ToList();
 
             currentIndex = -1;
-            correctCount = 0;
-            wrongCount = 0;
+            licznikPrawidlowe = 0;
+            licznikBledne = 0;
             prawidlowe.Text = "0";
             bledne.Text = "0";
             isQuizActive = true;
@@ -138,20 +138,20 @@ namespace projekt___angielski_quiz
              
             if (string.IsNullOrWhiteSpace(userInput))
             {
-                wrongCount++;
-                bledne.Text = wrongCount.ToString();
+                licznikBledne++;
+                bledne.Text = licznikBledne.ToString();
                 MessageBox.Show($"Czas minął! Poprawna odpowiedź to: {correctAnswer}");
             }
             else if (string.Equals(userInput, correctAnswer, StringComparison.InvariantCultureIgnoreCase))
             {
-                correctCount++;
-                prawidlowe.Text = correctCount.ToString();
+                licznikPrawidlowe++;
+                prawidlowe.Text = licznikPrawidlowe.ToString();
                 MessageBox.Show("Poprawna odpowiedź!");
             }
             else
             {
-                wrongCount++;
-                bledne.Text = wrongCount.ToString();
+                licznikBledne++;
+                bledne.Text = licznikBledne.ToString();
                 MessageBox.Show($"Niepoprawnie! Poprawna odpowiedź to: {correctAnswer}");
             }
         }
@@ -160,12 +160,12 @@ namespace projekt___angielski_quiz
         {
             isQuizActive = false;
             quizTimer.Stop();
-            MessageBox.Show($"Koniec quizu!\n\nPoprawne: {correctCount}\nBłędne: {wrongCount}");
+            MessageBox.Show($"Koniec quizu!\n\nPoprawne: {licznikPrawidlowe}\nBłędne: {licznikBledne}");
             losowe.Text = "";
             odpowiedz.Text = "";
             timelabel.Text = "";
 
-            if (correctCount >= 6)
+            if (licznikPrawidlowe >= 6)
             {
                 wynikPictureBox.Image = Properties.Resources.zdane_jpeg;
                 wynikPictureBox.Visible = true;
